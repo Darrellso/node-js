@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registro de Cartas de Yu-Gi-Oh!</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h1>Registro de Cartas de Yu-Gi-Oh!</h1>
+  <form id="registroForm">
+    <label for="tipo">Tipo de Carta:</label>
+    <select name="tipo" id="tipo">
+      <option value="monstruo">Monstruo</option>
+      <option value="magica">Mágica</option>
+      <option value="trampa">Trampa</option>
+    </select>
+    <br />
+    <label for="nombre">Nombre:</label>
+    <input type="text" name="nombre" id="nombre" required />
+    <br />
+    <label for="descripcion">Descripción:</label>
+    <textarea name="descripcion" id="descripcion" rows="3" required></textarea>
+    <br />
+    <label for="puntos">Puntos de Batalla:</label>
+    <input type="number" name="puntos" id="puntos" required />
+    <br />
+    <button type="submit">Registrar Carta</button>
+  </form>
+  <div>
+    <label for="searchTerm">Buscar Cartas:</label>
+    <input type="text" id="searchTerm" name="searchTerm" placeholder="Nombre o Tipo">
+    <button onclick="buscarCartas()">Buscar</button>
+  </div>
+  <div id="cartasList">
+  </div>
+
+
+  <script src="./server.js"></script>
+  
+</body>
+</html>

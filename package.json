@@ -1,16 +1,16 @@
 {
-  "name": "tarea2",
+  "name": "proyectofinal",
   "version": "1.0.0",
   "description": "",
-  "main": "calculadora.js",
-  "type": "module",
-  "scripts" : {
-    "start": "node calculadora.js",
+  "main": "sever.js",
+  "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "darrell",
   "license": "ISC",
   "dependencies": {
-    "chalk": "^4.1.0"
+    "chalk": "^4.1.0",
+    "jquery": "^3.7.0"
   }
 }
