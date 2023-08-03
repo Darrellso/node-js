@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const PORT = 3000;
-const MONGODB_URI = 'mongodb://localhost:3000/yugioh_db'; // URL de la base de datos MongoDB
+const MONGODB_URI = 'mongodb+srv://samael:cetav123@cluster0.ox7yybk.mongodb.net/'; // URL de la base de datos MongoDB
 const MAX_RETRIES = 3; // Número máximo de intentos de reconexión
 let retries = 0;
 
@@ -51,7 +51,6 @@ function connectWithRetry() {
 }
 
 // Ruta para buscar cartas por nombre o tipo
-app.post('/cards/search', async (req, res) => {
 // Ruta para buscar cartas por nombre o tipo
 app.post('/cards/search', async (req, res) => {
   try {
@@ -72,7 +71,6 @@ app.post('/cards/search', async (req, res) => {
   }
 });
 
-});
 
 // Ruta para obtener todas las cartas con paginación, ordenamiento y filtrado
 app.get('/cards', async (req, res) => {
