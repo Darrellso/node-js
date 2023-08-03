@@ -1,67 +1,89 @@
-  <!DOCTYPE html>
-  <html>
-  <head>
-    <title>Registro de Cartas de Yu-Gi-Oh!</title>
-    <link rel="stylesheet" href="styles.css">    
-  </head>
-  <body>
-    <h1>Registro de Cartas de Yu-Gi-Oh!</h1>
-    <form id="registroForm">
-      <label for="tipo">Tipo de Carta:</label>
-      <select name="tipo" id="tipo">
-        <option value="monstruo">Monstruo</option>
-        <option value="magica">Mágica</option>
-        <option value="trampa">Trampa</option>
-      </select>
-      <br />
-      <label for="nombre">Nombre:</label>
-      <input type="text" name="nombre" id="nombre" required />
-      <br />
-      <label for="descripcion">Descripción:</label>
-      <textarea name="descripcion" id="descripcion" rows="3" required></textarea>
-      <br />
-      <label for="puntos">Puntos de Batalla:</label>
-      <input type="number" name="puntos" id="puntos" required />
-      <br />
-      <button type="submit">Registrar Carta</button>
-    </form>
-    <div id="searchContainer">
-      <input type="text" id="buscar-input" name="searchTerm" placeholder="Nombre o Tipo">
-      <button id="buscar-button">Buscar</button>
-    </div>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registro de Cartas de Yu-Gi-Oh!</title>
+  <link rel="stylesheet" href="styles.css">    
+</head>
+<body>
+  <h1>Registro de Cartas de Yu-Gi-Oh!</h1>
+  <form id="registroForm">
+    <label for="tipo">Tipo de Carta:</label>
+    <select name="tipo" id="tipo">
+      <option value="monstruo">Monstruo</option>
+      <option value="magica">Mágica</option>
+      <option value="trampa">Trampa</option>
+    </select>
+    <br />
+    <label for="nombre">Nombre:</label>
+    <input type="text" name="nombre" id="nombre" required />
+    <br />
+    <label for="descripcion">Descripción:</label>
+    <textarea name="descripcion" id="descripcion" rows="3" required></textarea>
+    <br />
+    <label for="puntos">Puntos de Batalla:</label>
+    <input type="number" name="puntos" id="puntos" required />
+    <br />
+    <button type="submit">Registrar Carta</button>
+  </form>
+  <div id="searchContainer">
+    <input type="text" id="buscar-input" name="searchTerm" placeholder="Nombre o Tipo">
+    <button id="buscar-button">Buscar</button>
+  </div>
 
+  <!-- Opciones de Ordenamiento -->
+  <div>
+    <label for="sortBy">Ordenar por:</label>
+    <select name="sortBy" id="sortBy">
+      <option value="cardName">Nombre</option>
+      <option value="cardBattlePoints">Puntos de Batalla</option>
+    </select>
+    <label for="sortOrder">Orden:</label>
+    <select name="sortOrder" id="sortOrder">
+      <option value="asc">Ascendente</option>
+      <option value="desc">Descendente</option>
+    </select>
+    <button onclick="ordenarCartas()">Aplicar Ordenamiento</button>
+  </div>
 
-    <!-- Opciones de Ordenamiento -->
-    <div>
-      <label for="sortBy">Ordenar por:</label>
-      <select name="sortBy" id="sortBy">
-        <option value="cardName">Nombre</option>
-        <option value="cardBattlePoints">Puntos de Batalla</option>
-      </select>
-      <label for="sortOrder">Orden:</label>
-      <select name="sortOrder" id="sortOrder">
-        <option value="asc">Ascendente</option>
-        <option value="desc">Descendente</option>
-      </select>
-      <button onclick="ordenarCartas()">Aplicar Ordenamiento</button>
-    </div>
+  <!-- Opciones de Filtrado -->
+  <div class="filtradoCartas">
+    <label for="cardType">Filtrar por Tipo:</label>
+    <select name="cardType" id="cardType">
+      <option value="">Todos</option>
+      <option value="monstruo">Monstruo</option>
+      <option value="magica">Mágica</option>
+      <option value="trampa">Trampa</option>
+    </select>
+    <button onclick="filtrarCartas()">Aplicar Filtrado</button>
+  </div>
 
-    <!-- Opciones de Filtrado -->
-    <div class="filtradoCartas">
-      <label for="cardType">Filtrar por Tipo:</label>
-      <select name="cardType" id="cardType">
-        <option value="">Todos</option>
-        <option value="monstruo">Monstruo</option>
-        <option value="magica">Mágica</option>
-        <option value="trampa">Trampa</option>
-      </select>
-      <button onclick="filtrarCartas()">Aplicar Filtrado</button>
-    </div>
+  <!-- Lista de cartas -->
+  <div id="cartasList"></div>
 
-    <!-- Lista de cartas -->
-    <div id="lista-cartas"></div>
+  <!-- Formulario de edición de carta -->
+  <form id="editarForm" style="display: none;">
+    <h2>Editar Carta</h2>
+    <label for="edit-tipo">Tipo de Carta:</label>
+    <select name="edit-tipo" id="edit-tipo">
+      <option value="monstruo">Monstruo</option>
+      <option value="magica">Mágica</option>
+      <option value="trampa">Trampa</option>
+    </select>
+    <br />
+    <label for="edit-nombre">Nombre:</label>
+    <input type="text" name="edit-nombre" id="edit-nombre" required />
+    <br />
+    <label for="edit-descripcion">Descripción:</label>
+    <textarea name="edit-descripcion" id="edit-descripcion" rows="3" required></textarea>
+    <br />
+    <label for="edit-puntos">Puntos de Batalla:</label>
+    <input type="number" name="edit-puntos" id="edit-puntos" required />
+    <br />
+    <input type="hidden" id="edit-id" />
+    <button type="submit">Actualizar Carta</button>
+    <button type="button" onclick="cancelarEdicion()">Cancelar</button>
+  </form>
 
-
-    <script src="./script.js"></script>
-  </body>
-  </html>
+  <script src="./script.js"></script>
+</body>
+</html>

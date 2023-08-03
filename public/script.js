@@ -45,6 +45,7 @@ function registrarCarta(event) {
 
 // Agregar el evento de submit al formulario para registrar una nueva carta
 document.getElementById('registroForm').addEventListener('submit', registrarCarta);
+
 // Función para cargar y mostrar la lista de cartas
 function cargarCartas() {
   // Realizar una solicitud GET al servidor para obtener la lista de cartas
@@ -127,6 +128,82 @@ function buscarCartas() {
 }
 
 // Agregar el evento de clic al botón de búsqueda
-document.getElementById('mi-boton').addEventListener('click', miFuncion);
+document.getElementById('buscar-button').addEventListener('click', buscarCartas);
 
+// Función para mostrar el formulario de edición de una carta
+function mostrarFormularioEdicion(cartaId) {
+  const carta = data.docs.find((carta) => carta._id === cartaId);
+  if (!carta) {
+    console.log('No se encontró la carta con el ID:', cartaId);
+    return;
+  }
 
+  // Rellenar el formulario de edición con los datos de la carta
+  document.getElementById('edit-tipo').value = carta.cardType;
+  document.getElementById('edit-nombre').value = carta.cardName;
+  document.getElementById('edit-descripcion').value = carta.cardDescription;
+  document.getElementById('edit-puntos').value = carta.cardBattlePoints;
+  document.getElementById('edit-id').value = carta._id;
+
+  // Mostrar el formulario de edición y ocultar la lista de cartas
+  document.getElementById('editarForm').style.display = 'block';
+  document.getElementById('cartasList').style.display = 'none';
+}
+
+// Función para ocultar el formulario de edición
+function cancelarEdicion() {
+  document.getElementById('editarForm').style.display = 'none';
+  document.getElementById('cartasList').style.display = 'block';
+}
+
+// Agregar evento click para editar una carta
+document.getElementById('cartasList').addEventListener('click', (event) => {
+  if (event.target.tagName === 'BUTTON' && event.target.textContent === 'Editar') {
+    const cartaId = event.target.dataset.id;
+    mostrarFormularioEdicion(cartaId);
+  }
+});
+
+// Agregar evento submit al formulario de edición para actualizar una carta
+document.getElementById('editarForm').addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const cartaId = document.getElementById('edit-id').value;
+  const tipo = document.getElementById('edit-tipo').value;
+  const nombre = document.getElementById('edit-nombre').value;
+  const descripcion = document.getElementById('edit-descripcion').value;
+  const puntos = document.getElementById('edit-puntos').value;
+
+  // Validar los datos si es necesario
+
+  // Crear objeto con los datos de la carta actualizada
+  const cartaActualizada = {
+    cardType: tipo,
+    cardName: nombre,
+    cardDescription: descripcion,
+    cardBattlePoints: parseInt(puntos),
+  };
+
+  // Enviar los datos al servidor mediante una solicitud PUT utilizando Fetch API
+  fetch(`/cards/${cartaId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(cartaActualizada),
+  })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error('Error en la solicitud de actualización de carta.');
+    }
+    return response.json(); // Analizar la respuesta JSON
+  })
+  .then((data) => {
+    // Ocultar el formulario de edición y mostrar la lista de cartas actualizada
+    cancelarEdicion();
+    cargarCartas();
+  })
+  .catch((error) => {
+    console.error('Error al actualizar la carta:', error);
+  });
+});
