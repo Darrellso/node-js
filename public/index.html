@@ -30,37 +30,34 @@
     <button id="buscar-button">Buscar</button>
   </div>
 
-  <!-- Opciones de Ordenamiento -->
-  <div>
-    <label for="sortBy">Ordenar por:</label>
-    <select name="sortBy" id="sortBy">
-      <option value="cardName">Nombre</option>
-      <option value="cardBattlePoints">Puntos de Batalla</option>
-    </select>
-    <label for="sortOrder">Orden:</label>
-    <select name="sortOrder" id="sortOrder">
-      <option value="asc">Ascendente</option>
-      <option value="desc">Descendente</option>
-    </select>
-    <button onclick="ordenarCartas()">Aplicar Ordenamiento</button>
-  </div>
+<div>
+  <label for="sortBy">Ordenar por:</label>
+  <select name="sortBy" id="sortBy">
+    <option value="cardName">Nombre</option>
+    <option value="cardBattlePoints">Puntos de Batalla</option>
+  </select>
+  <label for="sortOrder">Orden:</label>
+  <select name="sortOrder" id="sortOrder">
+    <option value="asc">Ascendente</option>
+    <option value="desc">Descendente</option>
+  </select>
+  <button id="ordenar-button">Aplicar Ordenamiento</button>
+</div>
 
-  <!-- Opciones de Filtrado -->
-  <div class="filtradoCartas">
-    <label for="cardType">Filtrar por Tipo:</label>
-    <select name="cardType" id="cardType">
-      <option value="">Todos</option>
-      <option value="monstruo">Monstruo</option>
-      <option value="magica">Mágica</option>
-      <option value="trampa">Trampa</option>
-    </select>
-    <button onclick="filtrarCartas()">Aplicar Filtrado</button>
-  </div>
+<div class="filtradoCartas">
+  <label for="cardType">Filtrar por Tipo:</label>
+  <select name="cardType" id="cardType">
+    <option value="">Todos</option>
+    <option value="monstruo">Monstruo</option>
+    <option value="magica">Mágica</option>
+    <option value="trampa">Trampa</option>
+  </select>
+  <button id="filtrar-button">Aplicar Filtrado</button>
+</div>
 
-  <!-- Lista de cartas -->
+
   <div id="cartasList"></div>
 
-  <!-- Formulario de edición de carta -->
   <form id="editarForm" style="display: none;">
     <h2>Editar Carta</h2>
     <label for="edit-tipo">Tipo de Carta:</label>

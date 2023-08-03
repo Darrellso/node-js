@@ -50,11 +50,11 @@ function connectWithRetry() {
     });
 }
 
-// Ruta para buscar cartas por nombre o tipo
+
 // Ruta para buscar cartas por nombre o tipo
 app.post('/cards/search', async (req, res) => {
   try {
-    const searchTerm = req.body.searchTerm.toLowerCase();
+    const searchTerm = req.body.searchTerm.toLowerCase(); // Convertir a minúsculas
 
     // Realizar la búsqueda en la base de datos utilizando Mongoose
     const results = await Card.find({
@@ -72,10 +72,8 @@ app.post('/cards/search', async (req, res) => {
 });
 
 
-// Ruta para obtener todas las cartas con paginación, ordenamiento y filtrado
-app.get('/cards', async (req, res) => {
  // Ruta para obtener todas las cartas con paginación, ordenamiento y filtrado
-app.get('/cards', async (req, res) => {
+ app.get('/cards', async (req, res) => {
   try {
     const { page, limit, sortBy, sortOrder, cardType } = req.query;
 
@@ -98,10 +96,7 @@ app.get('/cards', async (req, res) => {
   }
 });
 
-});
 
-// Ruta para registrar una nueva carta
-app.post('/cards', async (req, res) => {
  // Ruta para registrar una nueva carta
 app.post('/cards', async (req, res) => {
   try {
@@ -114,11 +109,9 @@ app.post('/cards', async (req, res) => {
   }
 });
 
-});
 
 // Ruta para editar una carta
-app.put('/cards/:id', async (req, res) => {
-// Ruta para editar una carta
+
 app.put('/cards/:id', async (req, res) => {
   try {
     const cardId = req.params.id;
@@ -134,11 +127,7 @@ app.put('/cards/:id', async (req, res) => {
   }
 });
 
-});
-
 // Ruta para eliminar una carta
-app.delete('/cards/:id', async (req, res) => {
- // Ruta para eliminar una carta
 app.delete('/cards/:id', async (req, res) => {
   try {
     const cardId = req.params.id;
@@ -153,11 +142,7 @@ app.delete('/cards/:id', async (req, res) => {
   }
 });
 
-});
 
-// Buscar cartas por ID
-app.get('/cards/:id', async (req, res) => {
- // Buscar cartas por ID
 app.get('/cards/:id', async (req, res) => {
   try {
     const cardId = req.params.id;
@@ -172,7 +157,7 @@ app.get('/cards/:id', async (req, res) => {
   }
 });
 
-});
+
 
 // Cargar la página de inicio
 app.get('/', (req, res) => {

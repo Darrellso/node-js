@@ -1,4 +1,3 @@
-  /* Estilos generales */
   body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -15,7 +14,6 @@
     color: #fff;
   }
   
-  /* Estilos para el formulario de registro */
   #registroForm {
     max-width: 500px;
     margin: 0 auto;
@@ -52,7 +50,6 @@
     background-color: #0056b3;
   }
   
-  /* Estilos para la sección de búsqueda */
   div.search-container {
     max-width: 500px;
     margin: 10px auto;
@@ -85,7 +82,6 @@
     background-color: #0056b3;
   }
   
-  /* Estilos para la lista de cartas */
   #cartasList {
     max-width: 800px;
     margin: 20px auto;
@@ -101,7 +97,6 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
   
-  /* Estilos para las opciones de ordenamiento y filtrado */
   div.filter-sort-container {
     max-width: 800px;
     margin: 10px auto;
@@ -136,7 +131,6 @@
   div.filter-sort-container button:hover {
     background-color: #0056b3;
   }
-  /* Estilos para la sección de búsqueda */
   div#searchContainer {
     max-width: 800px;
     margin: 20px auto;
@@ -173,19 +167,16 @@
     margin-bottom: 20px;
   }
   
-  /* Estilos para las etiquetas */
   .filtradoCartas label {
     display: block;
     margin-bottom: 5px;
   }
   
-  /* Estilos para los selectores */
   .filtradoCartas select {
     padding: 5px;
     margin-bottom: 10px;
   }
   
-  /* Estilos para el botón */
   .filtradoCartas button {
     padding: 10px 20px;
     background-color: #007bff;
@@ -197,7 +188,6 @@
   .filtradoCartas button:hover {
     background-color: #0056b3;
   }
-  /* Estilos para el contenedor del formulario de búsqueda */
   div {
     display: flex;
     align-items: center;
@@ -205,12 +195,10 @@
     margin-bottom: 20px;
   }
   
-  /* Estilos para las etiquetas */
   div label {
     margin-right: 10px;
   }
   
-  /* Estilos para el campo de búsqueda */
   div input[type="text"] {
     padding: 5px;
     width: 200px;
@@ -218,7 +206,6 @@
     border-radius: 5px;
   }
   
-  /* Estilos para el botón de búsqueda */
   div button {
     padding: 10px 20px;
     background-color: #007bff;
