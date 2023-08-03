@@ -3,7 +3,6 @@
 <head>
   <title>Registro de Cartas de Yu-Gi-Oh!</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
   <h1>Registro de Cartas de Yu-Gi-Oh!</h1>
@@ -31,11 +30,38 @@
     <input type="text" id="searchTerm" name="searchTerm" placeholder="Nombre o Tipo">
     <button onclick="buscarCartas()">Buscar</button>
   </div>
+
+  <!-- Opciones de Ordenamiento -->
+  <div>
+    <label for="sortBy">Ordenar por:</label>
+    <select name="sortBy" id="sortBy">
+      <option value="cardName">Nombre</option>
+      <option value="cardBattlePoints">Puntos de Batalla</option>
+    </select>
+    <label for="sortOrder">Orden:</label>
+    <select name="sortOrder" id="sortOrder">
+      <option value="asc">Ascendente</option>
+      <option value="desc">Descendente</option>
+    </select>
+    <button onclick="ordenarCartas()">Aplicar Ordenamiento</button>
+  </div>
+
+  <!-- Opciones de Filtrado -->
+  <div class="filtradoCartas">
+    <label for="cardType">Filtrar por Tipo:</label>
+    <select name="cardType" id="cardType">
+      <option value="">Todos</option>
+      <option value="monstruo">Monstruo</option>
+      <option value="magica">Mágica</option>
+      <option value="trampa">Trampa</option>
+    </select>
+    <button onclick="filtrarCartas()">Aplicar Filtrado</button>
+  </div>
+
+  <!-- Lista de cartas -->
   <div id="cartasList">
   </div>
 
-
-  <script src="./server.js"></script>
-  
+  <script src="./script.js"></script>
 </body>
 </html>

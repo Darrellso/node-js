@@ -1,164 +1,189 @@
+// servers.js (Archivo del servidor)
+
 const express = require('express');
 const app = express();
 const path = require('path');
+const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const PORT = 3000;
-const LIMIT_PER_PAGE = 10; 
+const MONGODB_URI = 'mongodb://localhost:3000/yugioh_db'; // URL de la base de datos MongoDB
+const MAX_RETRIES = 3; // Número máximo de intentos de reconexión
+let retries = 0;
 
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname)));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-  const cards = [];
+// Definir el esquema de la carta
+const cardSchema = new mongoose.Schema({
+  cardType: String,
+  cardName: String,
+  cardDescription: String,
+  cardBattlePoints: Number,
+});
 
-  app.post('/cartas', (req, res) => {
-    const nuevaCarta = req.body;
-    cards.push(nuevaCarta);
-    res.json({ message: 'Carta registrada correctamente', carta: nuevaCarta });
-  });
-  
-  app.get('/cartas', (req, res) => {
-    res.json(cards);
-  });
-  
-  app.put('/cartas/:id', (req, res) => {
-    const cartaId = req.params.id;
-    const cartaActualizada = req.body;
-    const index = cards.findIndex((carta) => carta._id === cartaId);
+// Agregar el plugin de paginación al esquema
+cardSchema.plugin(mongoosePaginate);
 
-    if (index !== -1) {
-      cards[index] = { ...cards[index], ...cartaActualizada };
-      res.json({ message: 'Carta actualizada correctamente', carta: cards[index] });
-    } else {
-      res.status(404).json({ error: 'Carta no encontrada' });
-    }
-  });
+// Crear el modelo de la carta
+const Card = mongoose.model('Card', cardSchema);
 
-  app.delete('/cartas/:id', (req, res) => {
-    const cartaId = req.params.id;
-    res.json({ message: 'Carta eliminada correctamente' });
-  });
-
-  app.listen(PORT, () => {
-    console.log(`El servidor está escuchando en el puerto ${PORT}`);
-  });
-
-  app.use(express.static(path.join(__dirname)));
-
-  app.use(express.static(path.join(__dirname), { 
-      setHeaders: (res, filePath) => {
-        if (filePath.endsWith('.css')) {
-          res.setHeader('Content-Type', 'text/css');
-        } else if (filePath.endsWith('.js')) {
-          res.setHeader('Content-Type', 'text/javascript');
-        }
-      }
-    }));
-    
-    $(document).ready(() => {
-      obtenerCartas();
-
-      $("#registroForm").submit((e) => {
-        e.preventDefault();
-        const formData = $("#registroForm").serialize();
-        $.post("/cartas", formData, (data) => {
-          console.log(data.message);
-          obtenerCartas();
-        });
+function connectWithRetry() {
+  mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+      console.log('Conexión a MongoDB establecida.');
+      app.listen(PORT, () => {
+        console.log(`Servidor escuchando en el puerto ${PORT}`);
       });
+    })
+    .catch((error) => {
+      console.error('Error al conectar a MongoDB:', error);
+      retries++;
+      if (retries < MAX_RETRIES) {
+        console.log(`Intentando reconectar a MongoDB (Intento ${retries})...`);
+        setTimeout(connectWithRetry, 5000); // Esperar 5 segundos antes de intentar reconectar
+      } else {
+        console.error('Se superó el número máximo de intentos de reconexión. Saliendo...');
+        process.exit(1); // Salir del proceso de Node.js con código de error 1
+      }
     });
-
-app.get('/cartas', (req, res) => {
-  const { page = 1, limit = LIMIT_PER_PAGE, sort, filter } = req.query;
-
-  let filteredCards = cards;
-  if (filter) {
-    filteredCards = cards.filter(carta => carta.tipo === filter);
-  }
-
-  if (sort) {
-    filteredCards.sort((a, b) => a[sort] - b[sort]);
-  }
-
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-
-  const paginatedCards = filteredCards.slice(startIndex, endIndex);
-
-  res.json({
-    totalCards: filteredCards.length,
-    totalPages: Math.ceil(filteredCards.length / limit),
-    currentPage: parseInt(page),
-    cards: paginatedCards,
-  });
-});
-
-app.listen(PORT, () => {
-  console.log(`El servidor está escuchando en el puerto ${PORT}`);
-});
- function mostrarCartas() {
-  $.get("/cartas", (cartas) => {
-    const cartasList = $("#cartasList");
-    cartasList.empty();
-    cartas.forEach((carta) => {
-      const cardHtml = `<div class="card">
-        <h3>${carta.nombre}</h3>
-        <p>Tipo: ${carta.tipo}</p>
-        <p>${carta.descripcion}</p>
-        <p>Puntos de Batalla: ${carta.puntos}</p>
-        <button onclick="editarCarta('${carta._id}')">Editar</button>
-        <button onclick="eliminarCarta('${carta._id}')">Eliminar</button>
-      </div>`;
-      cartasList.append(cardHtml);
-    });
-  });
 }
 
-function editarCarta(id) {
-  $.get(`/cartas/${id}`, (carta) => {
-    // Rellenar el formulario con los detalles de la carta
-    $("#edicionForm #nombre").val(carta.nombre);
-    $("#edicionForm #tipo").val(carta.tipo);
-    $("#edicionForm #descripcion").val(carta.descripcion);
-    $("#edicionForm #puntos").val(carta.puntos);
-    $("#edicionForm #cartaId").val(carta._id);
+// Ruta para buscar cartas por nombre o tipo
+app.post('/cards/search', async (req, res) => {
+// Ruta para buscar cartas por nombre o tipo
+app.post('/cards/search', async (req, res) => {
+  try {
+    const searchTerm = req.body.searchTerm.toLowerCase();
 
-    $("#edicionForm").show();
-  });
-}
+    // Realizar la búsqueda en la base de datos utilizando Mongoose
+    const results = await Card.find({
+      $or: [
+        { cardName: { $regex: searchTerm, $options: 'i' } }, // Búsqueda por nombre
+        { cardType: { $regex: searchTerm, $options: 'i' } }, // Búsqueda por tipo
+      ],
+    });
 
-$("#edicionForm").submit((e) => {
-  e.preventDefault();
-  const formData = $("#edicionForm").serialize();
-  const cartaId = $("#edicionForm #cartaId").val();
-  $.ajax({
-    url: `/cartas/${cartaId}`,
-    type: "PUT",
-    data: formData,
-    success: (data) => {
-      console.log(data.message);
-      mostrarCartas();
-      $("#edicionForm").hide();
-    },
-    error: (error) => {
-      console.error("Error al editar la carta:", error.responseText);
-    },
-  });
+    res.json(results); // Responder con los resultados en formato JSON
+  } catch (error) {
+    console.error('Error al buscar cartas:', error);
+    res.status(500).json({ error: 'Error al buscar cartas' });
+  }
 });
 
-function eliminarCarta(id) {
-  if (confirm("¿Estás seguro de que deseas eliminar esta carta?")) {
-    $.ajax({
-      url: `/cartas/${id}`,
-      type: "DELETE",
-      success: (data) => {
-        console.log(data.message);
-        mostrarCartas();
-      },
-      error: (error) => {
-        console.error("Error al eliminar la carta:", error.responseText);
-      },
-    });
+});
+
+// Ruta para obtener todas las cartas con paginación, ordenamiento y filtrado
+app.get('/cards', async (req, res) => {
+ // Ruta para obtener todas las cartas con paginación, ordenamiento y filtrado
+app.get('/cards', async (req, res) => {
+  try {
+    const { page, limit, sortBy, sortOrder, cardType } = req.query;
+
+    const options = {
+      page: parseInt(page, 10) || 1,
+      limit: parseInt(limit, 10) || 10,
+      sort: { [sortBy]: sortOrder === 'desc' ? -1 : 1 },
+    };
+
+    const filters = {};
+    if (cardType) {
+      filters.cardType = cardType;
+    }
+
+    const cards = await Card.paginate(filters, options);
+    res.json(cards);
+  } catch (error) {
+    console.log('Error al obtener la lista de cartas:', error);
+    res.status(500).json({ error: 'Error al obtener la lista de cartas' });
   }
+});
+
+});
+
+// Ruta para registrar una nueva carta
+app.post('/cards', async (req, res) => {
+ // Ruta para registrar una nueva carta
+app.post('/cards', async (req, res) => {
+  try {
+    const newCard = new Card(req.body);
+    await newCard.save();
+    res.sendStatus(200);
+  } catch (error) {
+    console.log('Error al registrar la carta', error);
+    res.status(500).json({ error: 'Error al registrar la carta' });
+  }
+});
+
+});
+
+// Ruta para editar una carta
+app.put('/cards/:id', async (req, res) => {
+// Ruta para editar una carta
+app.put('/cards/:id', async (req, res) => {
+  try {
+    const cardId = req.params.id;
+    const editedCard = req.body;
+    const updatedCard = await Card.findByIdAndUpdate(cardId, editedCard, { new: true });
+    if (!updatedCard) {
+      return res.status(404).json({ error: 'Carta no encontrada' });
+    }
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error al editar la carta:', error);
+    res.status(500).json({ error: 'Error al editar la carta' });
+  }
+});
+
+});
+
+// Ruta para eliminar una carta
+app.delete('/cards/:id', async (req, res) => {
+ // Ruta para eliminar una carta
+app.delete('/cards/:id', async (req, res) => {
+  try {
+    const cardId = req.params.id;
+    const deletedCard = await Card.findByIdAndDelete(cardId);
+    if (!deletedCard) {
+      return res.status(404).json({ error: 'Carta no encontrada' });
+    }
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error al eliminar la carta:', error);
+    res.status(500).json({ error: 'Error al eliminar la carta' });
+  }
+});
+
+});
+
+// Buscar cartas por ID
+app.get('/cards/:id', async (req, res) => {
+ // Buscar cartas por ID
+app.get('/cards/:id', async (req, res) => {
+  try {
+    const cardId = req.params.id;
+    const card = await Card.findById(cardId);
+    if (!card) {
+      return res.status(404).json({ error: 'Carta no encontrada' });
+    }
+    res.json(card);
+  } catch (error) {
+    console.error('Error al obtener la carta:', error);
+    res.status(500).json({ error: 'Error al obtener la carta' });
+  }
+});
+
+});
+
+// Cargar la página de inicio
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Iniciar el servidor y la conexión a MongoDB
+function startServer() {
+  connectWithRetry(); // Iniciar la conexión a la base de datos con reintentos
 }
 
+startServer();
